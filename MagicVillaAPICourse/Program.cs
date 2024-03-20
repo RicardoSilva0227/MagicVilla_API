@@ -1,8 +1,17 @@
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+// ------- write to a file if needed (minimum level means everything above that level + that level will be logged)
+//Log.Logger = new LoggerConfiguration().MinimumLevel.Information()
+//    .WriteTo.File("log/villalogs.txt", rollingInterval:RollingInterval.Day).CreateLogger();
+//builder.Host.UseSerilog();
+
+
+builder.Services.AddControllers(option => {
+    //option.ReturnHttpNotAcceptable = true;
+}).AddNewtonsoftJson().AddXmlDataContractSerializerFormatters();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
