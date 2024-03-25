@@ -1,4 +1,5 @@
 
+using MagicVillaAPICourse;
 using MagicVillaAPICourse.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,6 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 //    .WriteTo.File("log/villalogs.txt", rollingInterval:RollingInterval.Day).CreateLogger();
 //builder.Host.UseSerilog();
 
+builder.Services.AddAutoMapper(typeof(MappingConfig));
 builder.Services.AddDbContext<ApplicationDbContext>(option => {
     option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultSQLConnection"));
 });
