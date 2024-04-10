@@ -5,6 +5,7 @@ using MagicVillaWebProject.Services.IServices;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace MagicVillaWebProject.Controllers
 {
@@ -19,7 +20,7 @@ namespace MagicVillaWebProject.Controllers
             _mapper = mapper;
         }
 
-
+        #region Index
         public async Task<IActionResult> IndexVilla()
         {
             List<VillaDto> list = new();
@@ -31,7 +32,9 @@ namespace MagicVillaWebProject.Controllers
             }
             return View(list);
         }
+        #endregion
 
+        #region Create
         public async Task<IActionResult> CreateVilla()
         {
             return View();
@@ -51,6 +54,41 @@ namespace MagicVillaWebProject.Controllers
             }
             return View(model);
         }
+        #endregion
+
+        #region Update
+        public async Task<IActionResult> UpdateVilla(int villaId)
+        {
+            if (ModelState.IsValid)
+            {
+                var response = await _villaService.GetAsync<APIResponse>(villaId);
+                if (response != null && response.IsSuccess)
+                {
+                    VillaDto model = JsonConvert.DeserializeObject<VillaDto>(Convert.ToString(response.result));
+                    return View(_mapper.Map<VillaUpdateDTO>(model));
+                }
+            }
+            return NotFound();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateVilla(VillaUpdateDTO model)
+        {
+            if (ModelState.IsValid)
+            {
+                var response = await _villaService.UpdateAsync<APIResponse>(model);
+                if (response != null && response.IsSuccess)
+                {
+                    return RedirectToAction(nameof(IndexVilla));
+                }
+            }
+            return View(model);
+        }
+
+        #endregion
+
+       
 
 
     }
