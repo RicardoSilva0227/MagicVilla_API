@@ -10,13 +10,13 @@ namespace MagicVillaAPICourse.Controllers
 {
     [Route("api/VillaNumber")]
     [ApiController]
-    public class VillaNumberController : ControllerBase
+    public class VillaNumberAPIController : ControllerBase
     {
         protected APIResponse _response;
         private readonly IVillaNumberRepository _dbVillaNumber;
         private readonly IVillaRepository _dbVilla;
         private readonly IMapper _mapper;
-        public VillaNumberController(IVillaNumberRepository dbVillaNumber, IMapper mapper, IVillaRepository dbVilla)
+        public VillaNumberAPIController(IVillaNumberRepository dbVillaNumber, IMapper mapper, IVillaRepository dbVilla)
         {
             _dbVillaNumber = dbVillaNumber;
             _mapper = mapper;

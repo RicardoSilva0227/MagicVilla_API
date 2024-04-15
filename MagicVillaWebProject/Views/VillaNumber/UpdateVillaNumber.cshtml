@@ -1,11 +1,11 @@
-﻿@model MagicVillaWebProject.Models.ViewModels.VillaNumberCreateVM
+﻿@model MagicVillaWebProject.Models.ViewModels.VillaNumberUpdateVM
 
-<form asp-action="CreateVillaNumber">
+<form asp-action="UpdateVillaNumber">
     <br />
     <div class="container border p-3">
-        <h1 class="text-primary">Create Villa</h1>
+        <h1 class="text-primary">Update Villa</h1>
         <hr />
-
+        <input hidden asp-for="VillaNumber.VillaNo" />
         <div class="row">
             <div asp-validation-summary="All" class="text-danger"></div>
 
@@ -13,7 +13,7 @@
                 <label asp-for="VillaNumber.VillaNo" class="control-label pt-2" style="font-size:20px;"></label>
             </div>
             <div class="col-10 pb-3">
-                <input asp-for="VillaNumber.VillaNo" class="form-control" />
+                <input asp-for="VillaNumber.VillaNo" disabled class="form-control" />
                 <span asp-validation-for="VillaNumber.VillaNo" class="text-danger"></span>
             </div>
 
@@ -23,7 +23,7 @@
             <div class="col-10 pb-3">
                 <select asp-for="VillaNumber.VillaID" class="form-select" asp-items="@Model.VillaList">
                     <option disabled selected>
-                        -- Select Villa -- 
+                        -- Select Villa --
                     </option>
                 </select>
                 <span asp-validation-for="VillaNumber.VillaID" class="text-danger"></span>
@@ -40,7 +40,7 @@
                 <a asp-action="IndexVillaNumber" asp-controller="VillaNumber" class="btn-primary btn form-control">Back to List</a>
             </div>
             <div class="col-5">
-                <input type="submit" value="Create" class="btn btn-success form-control"></a>
+                <input type="submit" value="Update" class="btn btn-success form-control"></a>
             </div>
         </div>
     </div>
