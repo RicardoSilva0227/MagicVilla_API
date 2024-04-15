@@ -97,13 +97,13 @@ namespace MagicVillaAPICourse.Controllers
                 if (await _dbVillaNumber.GetAsync(u => u.VillaNo == createDto.VillaNo) != null)
                 {
                     ModelState.AddModelError("ErrorMessages", "Villa number already exists!");
-                    return BadRequest(_response);
+                    return BadRequest(ModelState);
                 }
 
                 if (await _dbVilla.GetAsync(u=>u.Id == createDto.VillaID)==null)
                 {
                     ModelState.AddModelError("ErrorMessages", "Villa ID is invalid!");
-                    return BadRequest(_response);
+                    return BadRequest(ModelState);
                 }
 
                 if (createDto == null)
@@ -178,7 +178,10 @@ namespace MagicVillaAPICourse.Controllers
                     _response.StatusCode = HttpStatusCode.BadRequest;
                     return BadRequest(_response);
                 }
-
+                if (await _dbVilla.GetAllAsync(u => u.Id == updateDto.VillaID) == null)
+                {
+                    ModelState.AddModelError("ErrorMessages", "Villa ID is invalid");
+                }
                 VillaNumber model = _mapper.Map<VillaNumber>(updateDto);
 
                 await _dbVillaNumber.UpdateAsync(model);
