@@ -49,9 +49,11 @@ namespace MagicVillaWebProject.Controllers
                 var response = await _villaService.CreateAsync<APIResponse>(model);
                 if (response != null && response.IsSuccess)
                 {
+                    TempData["Success"] = "Villa Created Successfully!";
                     return RedirectToAction(nameof(IndexVilla));
                 }
             }
+            TempData["error"] = "Error encountered.";
             return View(model);
         }
         #endregion
@@ -80,9 +82,11 @@ namespace MagicVillaWebProject.Controllers
                 var response = await _villaService.UpdateAsync<APIResponse>(model);
                 if (response != null && response.IsSuccess)
                 {
+                    TempData["Success"] = "Villa Updated Successfully!";
                     return RedirectToAction(nameof(IndexVilla));
                 }
             }
+            TempData["error"] = "Error encountered.";
             return View(model);
         }
 
@@ -110,8 +114,10 @@ namespace MagicVillaWebProject.Controllers
             var response = await _villaService.DeleteAsync<APIResponse>(model.Id);
             if (response != null && response.IsSuccess)
             {
+                TempData["Success"] = "Villa Deleted Successfully!";
                 return RedirectToAction(nameof(IndexVilla));
             }
+            TempData["error"] = "Error encountered.";
 
             return View(model);
         }
