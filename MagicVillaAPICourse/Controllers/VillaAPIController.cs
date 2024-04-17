@@ -2,6 +2,7 @@
 using MagicVillaAPICourse.Models;
 using MagicVillaAPICourse.Models.Dto;
 using MagicVillaAPICourse.Repository.IRepository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -25,6 +26,7 @@ namespace MagicVillaAPICourse.Controllers
 
         #region Get All Villas
         [HttpGet]
+        [Authorize(Roles = "admin")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<APIResponse>> GetVillas()
         {
@@ -48,6 +50,7 @@ namespace MagicVillaAPICourse.Controllers
         #region Get Villa
 
         [HttpGet("{id:int}", Name = "GetVilla")]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(VillaDto))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -86,6 +89,7 @@ namespace MagicVillaAPICourse.Controllers
 
         #region Create Villa
         [HttpPost]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -123,6 +127,7 @@ namespace MagicVillaAPICourse.Controllers
 
         #region Delete
         [HttpDelete("{id:int}", Name = "DeleteVilla")]
+        [Authorize(Roles = "Custom")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

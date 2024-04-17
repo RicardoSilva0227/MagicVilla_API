@@ -9,6 +9,7 @@ namespace MagicVillaAPICourse.Data
             :base(options) {
                 
         }
+        public DbSet<LocalUser> LocalUsers { get; set; }
         public DbSet<Villa> Villas { get; set; }
         public DbSet<VillaNumber> VillasNumber { get; set; }
 
