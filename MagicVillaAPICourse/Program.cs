@@ -3,7 +3,10 @@ using MagicVillaAPICourse;
 using MagicVillaAPICourse.Data;
 using MagicVillaAPICourse.Repository;
 using MagicVillaAPICourse.Repository.IRepository;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,13 +18,35 @@ var builder = WebApplication.CreateBuilder(args);
 //builder.Host.UseSerilog();
 
 builder.Services.AddAutoMapper(typeof(MappingConfig));
-builder.Services.AddDbContext<ApplicationDbContext>(option => {
+builder.Services.AddDbContext<ApplicationDbContext>(option =>
+{
     option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultSQLConnection"));
 });
 builder.Services.AddScoped<IVillaRepository, VillaRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IVillaNumberRepository, VillaNumberRepository>();
-builder.Services.AddControllers(option => {
+
+var key = builder.Configuration.GetValue<string>("ApiSettings:Secret");
+
+builder.Services.AddAuthentication(x =>
+{
+    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(x =>
+{
+    x.RequireHttpsMetadata = true;
+    x.SaveToken = true;
+    x.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(key)),
+        ValidateIssuer = false,
+        ValidateAudience = false,
+    };
+});
+
+builder.Services.AddControllers(option =>
+{
     //option.ReturnHttpNotAcceptable = true;
 }).AddNewtonsoftJson().AddXmlDataContractSerializerFormatters();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -38,6 +63,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 
