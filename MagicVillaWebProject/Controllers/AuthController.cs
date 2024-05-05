@@ -1,8 +1,10 @@
 ﻿using MagicVillaWebProject.Models;
 using MagicVillaWebProject.Models.Dto;
 using MagicVillaWebProject.Services.IServices;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace MagicVillaWebProject.Controllers
 {
@@ -11,7 +13,7 @@ namespace MagicVillaWebProject.Controllers
         private readonly IAuthService _authService;
         public AuthController(IAuthService authService)
         {
-                _authService = authService;
+            _authService = authService;
         }
 
 
@@ -24,9 +26,20 @@ namespace MagicVillaWebProject.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(LoginResponseDto dto)
+        public async Task<IActionResult> Login(LoginRequestDto dto)
         {
-            return View();
+            APIResponse response = await _authService.LoginAsync<APIResponse>(dto);
+            if (response != null && response.IsSuccess)
+            {
+                LoginResponseDto model = JsonConvert.DeserializeObject<LoginResponseDto>(Convert.ToString(response.result));
+                HttpContext.Session.SetString(SD.SD.SessionToken, model.Token);
+                return RedirectToAction("Index", "Home");
+            }
+            else
+            {
+                ModelState.AddModelError("CustomError", response.ErrorMessages.FirstOrDefault());
+                return View(dto);
+            }
         }
 
         [HttpGet]
@@ -51,11 +64,13 @@ namespace MagicVillaWebProject.Controllers
         [HttpGet]
         public async Task<IActionResult> Logout(RegistrationRequestDto dto)
         {
-            return View();
+            await HttpContext.SignOutAsync();
+            HttpContext.Session.SetString(SD.SD.SessionToken, "");
+            return RedirectToAction("Index", "Home");
         }
 
         [HttpGet]
-        public IActionResult AccessDenied() 
+        public IActionResult AccessDenied()
         {
             return View();
         }
