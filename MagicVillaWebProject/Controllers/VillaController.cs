@@ -2,6 +2,7 @@
 using MagicVillaWebProject.Models;
 using MagicVillaWebProject.Models.Dto;
 using MagicVillaWebProject.Services.IServices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Collections.Generic;
@@ -25,7 +26,7 @@ namespace MagicVillaWebProject.Controllers
         {
             List<VillaDto> list = new();
 
-            var response = await _villaService.GetAllAsync<APIResponse>();
+            var response = await _villaService.GetAllAsync<APIResponse>(HttpContext.Session.GetString(SD.SD.SessionToken));
             if (response != null && response.IsSuccess)
             {
                 list = JsonConvert.DeserializeObject<List<VillaDto>>(Convert.ToString(response.result));
@@ -35,6 +36,7 @@ namespace MagicVillaWebProject.Controllers
         #endregion
 
         #region Create
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> CreateVilla()
         {
             return View();
@@ -42,11 +44,12 @@ namespace MagicVillaWebProject.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> CreateVilla(VillaCreateDTO model)
         {
             if (ModelState.IsValid)
             {
-                var response = await _villaService.CreateAsync<APIResponse>(model);
+                var response = await _villaService.CreateAsync<APIResponse>(model, HttpContext.Session.GetString(SD.SD.SessionToken));
                 if (response != null && response.IsSuccess)
                 {
                     TempData["Success"] = "Villa Created Successfully!";
@@ -59,11 +62,12 @@ namespace MagicVillaWebProject.Controllers
         #endregion
 
         #region Update
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> UpdateVilla(int villaId)
         {
             if (ModelState.IsValid)
             {
-                var response = await _villaService.GetAsync<APIResponse>(villaId);
+                var response = await _villaService.GetAsync<APIResponse>(villaId, HttpContext.Session.GetString(SD.SD.SessionToken));
                 if (response != null && response.IsSuccess)
                 {
                     VillaDto model = JsonConvert.DeserializeObject<VillaDto>(Convert.ToString(response.result));
@@ -75,11 +79,12 @@ namespace MagicVillaWebProject.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> UpdateVilla(VillaUpdateDTO model)
         {
             if (ModelState.IsValid)
             {
-                var response = await _villaService.UpdateAsync<APIResponse>(model);
+                var response = await _villaService.UpdateAsync<APIResponse>(model, HttpContext.Session.GetString(SD.SD.SessionToken));
                 if (response != null && response.IsSuccess)
                 {
                     TempData["Success"] = "Villa Updated Successfully!";
@@ -93,11 +98,12 @@ namespace MagicVillaWebProject.Controllers
         #endregion
 
         #region Delete
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteVilla(int villaId)
         {
             if (ModelState.IsValid)
             {
-                var response = await _villaService.GetAsync<APIResponse>(villaId);
+                var response = await _villaService.GetAsync<APIResponse>(villaId, HttpContext.Session.GetString(SD.SD.SessionToken));
                 if (response != null && response.IsSuccess)
                 {
                     VillaDto model = JsonConvert.DeserializeObject<VillaDto>(Convert.ToString(response.result));
@@ -109,9 +115,10 @@ namespace MagicVillaWebProject.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteVilla(VillaDto model)
         {
-            var response = await _villaService.DeleteAsync<APIResponse>(model.Id);
+            var response = await _villaService.DeleteAsync<APIResponse>(model.Id, HttpContext.Session.GetString(SD.SD.SessionToken));
             if (response != null && response.IsSuccess)
             {
                 TempData["Success"] = "Villa Deleted Successfully!";

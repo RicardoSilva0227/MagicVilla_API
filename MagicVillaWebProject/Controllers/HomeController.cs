@@ -5,6 +5,7 @@ using MagicVillaWebProject.Services.IServices;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Diagnostics;
+using static System.Net.WebRequestMethods;
 
 namespace MagicVillaWebProject.Controllers
 {
@@ -24,7 +25,7 @@ namespace MagicVillaWebProject.Controllers
         {
             List<VillaDto> list = new();
 
-            var response = await _villaService.GetAllAsync<APIResponse>();
+            var response = await _villaService.GetAllAsync<APIResponse>(HttpContext.Session.GetString(SD.SD.SessionToken));
             if (response != null && response.IsSuccess)
             {
                 list = JsonConvert.DeserializeObject<List<VillaDto>>(Convert.ToString(response.result));
