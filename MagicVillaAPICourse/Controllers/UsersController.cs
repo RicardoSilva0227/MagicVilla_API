@@ -6,8 +6,9 @@ using System.Net;
 
 namespace MagicVillaAPICourse.Controllers
 {
-    [Route("api/UsersAuth")]
+    [Route("api/v1/UsersAuth")]
     [ApiController]
+    [ApiVersionNeutral]
     public class UsersController : Controller
     {
         private readonly IUserRepository _userRepository;
@@ -15,7 +16,7 @@ namespace MagicVillaAPICourse.Controllers
         public UsersController(IUserRepository userRepostory)
         {
             _userRepository = userRepostory;
-            this._response = new();
+            _response = new();
         }
 
         #region Login
@@ -51,7 +52,7 @@ namespace MagicVillaAPICourse.Controllers
             }
 
             var user = await _userRepository.Register(Model);
-            if (user == null) 
+            if (user == null)
             {
                 _response.StatusCode = HttpStatusCode.BadRequest;
                 _response.IsSuccess = false;

@@ -7,10 +7,11 @@ using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
-namespace MagicVillaAPICourse.Controllers
+namespace MagicVillaAPICourse.Controllers.V1
 {
-    [Route("api/VillaNumber")]
+    [Route("api/v{version:apiVersion}/VillaNumber")]
     [ApiController]
+    [ApiVersion("1.0",Deprecated = true)]
     public class VillaNumberAPIController : ControllerBase
     {
         protected APIResponse _response;
@@ -21,7 +22,7 @@ namespace MagicVillaAPICourse.Controllers
         {
             _dbVillaNumber = dbVillaNumber;
             _mapper = mapper;
-            this._response = new();
+            _response = new();
             _dbVilla = dbVilla;
         }
 
@@ -47,8 +48,13 @@ namespace MagicVillaAPICourse.Controllers
         }
         #endregion
 
-        #region Get VillaNumber
+        [HttpGet("GetString")]
+        public IEnumerable<string> GetStrings()
+        {
+            return new string[] { "string1", "string2" };
+        }
 
+        #region Get VillaNumber
         [HttpGet("{id:int}", Name = "GetVillaNumber")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(VillaDto))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
