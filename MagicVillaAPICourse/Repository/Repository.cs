@@ -43,12 +43,26 @@ namespace MagicVillaAPICourse.Repository
             return await query.FirstOrDefaultAsync();
         }
 
-        public async Task<List<T>> GetAllAsync(Expression<Func<T, bool>>? filter = null, string? includeProperties = null)
+        public async Task<List<T>> GetAllAsync(Expression<Func<T, bool>>? filter = null, string? includeProperties = null, int pageSize = 0, int pageNumber = 1)
         {
             IQueryable<T> query = dbSet;
 
             if (filter != null)
                 query = query.Where(filter);
+            
+            if (pageNumber > 0)
+            {
+                if (pageSize > 100)
+                {
+                    pageSize = 100;
+                }
+                // if pagesize is 5 and page number 1 the query will be the following
+                // 5*(1-1).take(5)
+                // meaning we want to skip 0 records and take the first five records.
+                // if pagesize is 5 and page number 2 the query will skip the first 5 records and take the following 5
+                // 5*(2-1).take5 (skip5.take(5)
+                query = query.Skip(pageSize * (pageNumber - 1)).Take(pageSize);
+            }
 
             if (includeProperties != null)
             {
